@@ -7,19 +7,19 @@ var elixir        = require('laravel-elixir'),
     wiredep       = require('wiredep');
 
 elixir.config.assetsPath = 'src';
-elixir.config.publicPath = '';
+elixir.config.publicPath = 'public';
 
 
 gulp.task('build', function(){
     elixir(function(mix) {
 
         //Clean first before build
-        del(['./css/', './js/', './index.html']);
+        del(['public/css/', 'public/js/', 'public/index.html']);
 
         // Cache the template
         gulp.src('src/coffee/**/*.html')
             .pipe(templateCache({module: 'app'}))
-            .pipe(gulp.dest('js'));
+            .pipe(gulp.dest('public/js'));
 
         wiredep({src: 'src/sass/*'});
 
@@ -37,12 +37,12 @@ gulp.task('inject', function(){
     // Inject the file to html
     var target = gulp.src('./src/index.html');
     // It's not necessary to read the files (will speed up things), we're only after their paths: 
-    var sources = gulp.src(['./js/**/*.js', './css/**/*.css'], {read: false});
+    var sources = gulp.src(['public/js/**/*.js', 'public/css/**/*.css'], {read: false});
 
     target
-        .pipe(wiredep.stream())
-        .pipe(inject(sources))
-        .pipe(gulp.dest('./'));
+        .pipe(wiredep.stream({ignorePath: '../public'}))
+        .pipe(inject(sources, {ignorePath: '/public'}))
+        .pipe(gulp.dest('public'));
 });
 
 gulp.task('watch', ['default'], function(){

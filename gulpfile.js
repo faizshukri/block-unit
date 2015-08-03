@@ -4,50 +4,69 @@ var elixir        = require('laravel-elixir'),
     inject        = require('gulp-inject'),
     del           = require('del'),
     bowerFiles    = require('main-bower-files'),
-    wiredep       = require('wiredep');
+    wiredep       = require('wiredep').stream,
+    sass          = require('gulp-sass'),
+    coffee        = require('gulp-coffee'),
+    concat        = require('gulp-concat'),
+    clean         = require('gulp-clean');
 
 elixir.config.assetsPath = 'src';
 elixir.config.publicPath = 'public';
+var path = {
+    'assets' : 'src',
+    'public' : 'public',
+    'vendor' : 'public/vendor'
+};
 
+gulp.task('build', ['clean', 'cacheTemplate', 'sass', 'coffee', 'scripts', 'copyAssets']);
 
-gulp.task('build', function(){
-    elixir(function(mix) {
-
-        //Clean first before build
-        del(['public/css/', 'public/js/', 'public/index.html', 'public/fonts']);
-
-        // Cache the template
-        gulp.src('src/coffee/**/*.html')
-            .pipe(templateCache({module: 'app'}))
-            .pipe(gulp.dest('public/js'));
-
-        wiredep({src: 'src/sass/*'});
-
-        mix
-            .sass(
-                '**/*.scss'
-            )
-            .coffee(
-                '**/*.coffee'
-            )
-            .scripts(
-                '**/*.js'
-            )
-            .copy(
-                'public/vendor/bootstrap/fonts',
-                'public/fonts/bootstrap'
-            );
-    });
+gulp.task('clean', function(){
+    //Clean first before build
+    return gulp.src([path.public+'/css/', path.public+'/js/', path.public+'/index.html', path.public+'/fonts/'], {read: false})
+        .pipe(clean({force: true}));
 });
 
-gulp.task('inject', function(){
+gulp.task('cacheTemplate', ['clean'], function(){
+    // Cache the template
+    return gulp.src(path.assets+'/coffee/**/*.html')
+        .pipe(templateCache({module: 'app'}))
+        .pipe(gulp.dest(path.public+'/js'));
+});
+
+gulp.task('sass', ['clean'], function () {
+    return gulp.src(path.assets + '/sass/**/*.scss')
+        .pipe(wiredep())
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest(path.public + '/css'));
+});
+
+gulp.task('coffee', ['clean'], function() {
+    return gulp.src(path.assets + '/coffee/**/*.coffee')
+        .pipe(coffee())
+        .pipe(concat('app.js'))
+        .pipe(gulp.dest(path.public + '/js'));
+});
+
+gulp.task('scripts', ['clean'], function() {
+    return gulp.src(path.assets + '/js/**/*.js')
+        .pipe(concat('all.js'))
+        .pipe(gulp.dest(path.public + '/js'));
+});
+
+gulp.task('copyAssets', ['clean'], function(){
+    return gulp.src(path.vendor + '/bootstrap/fonts/**/*')
+        .pipe(gulp.dest(path.public + '/fonts/bootstrap'));
+});
+
+gulp.task('inject', ['build'], function(){
+
     // Inject the file to html
     var target = gulp.src('./src/index.html');
     // It's not necessary to read the files (will speed up things), we're only after their paths: 
     var sources = gulp.src(['public/js/**/*.js', 'public/css/**/*.css'], {read: false});
 
     target
-        .pipe(wiredep.stream({ignorePath: '../public'}))
+        .pipe(wiredep({ignorePath: '../public'}))
         .pipe(inject(sources, {ignorePath: '/public'}))
         .pipe(gulp.dest('public'));
 });

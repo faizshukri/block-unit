@@ -8,7 +8,12 @@ var elixir        = require('laravel-elixir'),
     sass          = require('gulp-sass'),
     coffee        = require('gulp-coffee'),
     concat        = require('gulp-concat'),
-    clean         = require('gulp-clean');
+    clean         = require('gulp-clean'),
+    gulpif        = require('gulp-if'),
+    uglify        = require('gulp-uglify'),
+    uglifycss     = require('gulp-uglifycss'),
+    rename        = require("gulp-rename"),
+    argv          = require('yargs').argv;
 
 elixir.config.assetsPath = 'src';
 elixir.config.publicPath = 'public';
@@ -30,6 +35,8 @@ gulp.task('cacheTemplate', ['clean'], function(){
     // Cache the template
     return gulp.src(path.assets+'/coffee/**/*.html')
         .pipe(templateCache({module: 'app'}))
+        .pipe(gulpif(argv.production, uglify()))
+        .pipe(gulpif(argv.production, rename({suffix: '.min'})))
         .pipe(gulp.dest(path.public+'/js'));
 });
 
@@ -37,6 +44,8 @@ gulp.task('sass', ['clean'], function () {
     return gulp.src(path.assets + '/sass/**/*.scss')
         .pipe(wiredep())
         .pipe(sass().on('error', sass.logError))
+        .pipe(gulpif(argv.production, uglifycss()))
+        .pipe(gulpif(argv.production, rename({suffix: '.min'})))
         .pipe(gulp.dest(path.public + '/css'));
 });
 
@@ -44,12 +53,16 @@ gulp.task('coffee', ['clean'], function() {
     return gulp.src(path.assets + '/coffee/**/*.coffee')
         .pipe(coffee())
         .pipe(concat('app.js'))
+        .pipe(gulpif(argv.production, uglify()))
+        .pipe(gulpif(argv.production, rename({suffix: '.min'})))
         .pipe(gulp.dest(path.public + '/js'));
 });
 
 gulp.task('scripts', ['clean'], function() {
     return gulp.src(path.assets + '/js/**/*.js')
         .pipe(concat('all.js'))
+        .pipe(gulpif(argv.production, uglify()))
+        .pipe(gulpif(argv.production, rename({suffix: '.min'})))
         .pipe(gulp.dest(path.public + '/js'));
 });
 

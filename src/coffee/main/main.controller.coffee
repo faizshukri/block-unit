@@ -1,2 +1,3 @@
 angular.module "app"
-  .controller "MainCtrl", ($scope) ->
+  .controller "MainCtrl", [ '$scope', ($scope) ->
+  ]

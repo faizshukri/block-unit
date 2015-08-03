@@ -1,5 +1,5 @@
 angular.module "app"
-  .controller "BlocklyCtrl", ($filter, $scope) ->
+  .controller "BlocklyCtrl", [ '$scope', ($scope) ->
 
     this.classes = []
 
@@ -150,4 +150,5 @@ angular.module "app"
         "text_print",
         "text_prompt",
         "text_prompt_ext",
-      ],
+      ]
+  ]

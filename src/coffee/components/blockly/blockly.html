@@ -1,0 +1,88 @@
+<div id="blockly" ng-controller="BlocklyCtrl as blockly">
+    <div class="row">
+        <div class="col-sm-3">
+            <div>
+                <form method="post" enctype="multipart/form-data" id="fileUploadForm">
+                    <input type="file" name="java_class" id="java_class" style="display: none;">
+                    <input type="submit" value="Upload Image" name="submit" id="fileUploadBtn" class="btn btn-primary">
+                </form>
+            </div>
+            <hr />
+            <div><h4 class="pull-left">Classes</h4><a href="" ng-click="blockly.createClass()" class="btn btn-primary pull-right"><i class="glyphicon glyphicon-plus "></i> New class</a></div>
+            <div>
+                <select class="form-control selectItem" size="4" ng-model="blockly.selectedClass" ng-options="class.name for class in blockly.classes" ng-change="blockly.updateClass(blockly.selectedClass)">
+                    <option value="" ng-if="false"></option>
+                </select>
+            </div>
+            <hr />
+            <div><h4 class="pull-left">Methods</h4><a href="" ng-click="blockly.createMethod()" class="btn btn-primary pull-right"><i class="glyphicon glyphicon-plus "></i> New method</a></div>
+            <div>
+                <select class="form-control selectItem" size="4" ng-model="blockly.selectedMethod" ng-options="method.name for method in blockly.selectedClass.methods track by method.selected">
+                    <option value="" ng-if="false"></option>
+                </select>
+            </div>
+            <hr />
+            <div><h4 class="pull-left">Tests</h4><a href="" ng-click="blockly.createTest()" class="btn btn-primary pull-right"><i class="glyphicon glyphicon-plus "></i> New test</a></div>
+            <div>
+                <select class="form-control selectItem" size="4" ng-model="blockly.selectedTest" ng-options="test.name for test in blockly.selectedClass.tests  track by test.selected">
+                    <option value="" ng-if="false"></option>
+                </select>
+            </div>
+            <hr />
+            <a href="" class="btn btn-success btn-lg btn-block">Generate jUnit</a>
+        </div>
+        <div class="col-sm-9">
+            <div id="blocklyDiv" style="height: 520px; width: 100%;"></div>
+        </div>
+    </div>
+
+
+    <xml id="toolbox" style="display: none">
+        <category ng-repeat="(key, val) in blockly.blocks" name="{{key}}">
+            <block ng-repeat="type in val" type="{{ type }}"></block>
+        </category>
+        <sep></sep>
+        <category name="Variables" custom="VARIABLE"></category>
+        <category name="Functions" custom="PROCEDURE"></category>
+    </xml>
+</div>
+
+<script>
+    
+
+    (function(){
+        // Configure blockly
+        setTimeout(function(){
+            var workspace = Blockly.inject('blocklyDiv',
+            {toolbox: document.getElementById('toolbox')});
+        }, 10);
+
+        // Trigger file upload
+        $('#fileUploadBtn').click(function(e){
+            e.preventDefault();
+            $('#java_class').trigger('click');
+        });
+
+        // On file change, submit the form
+        $('#java_class').change(function(e){
+            $('#fileUploadForm').trigger('submit');
+        });
+
+        // On form submit, use ajax
+        $('#fileUploadForm').submit(function(e){
+            e.preventDefault();
+
+            $.ajax({
+                url: 'api/upload.php',
+                dataType: 'json',
+                type: 'POST',
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                cache: false
+            }).done(function(data){
+                console.log(data);
+            });
+        });
+    })();
+</script>

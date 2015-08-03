@@ -11,9 +11,6 @@ $factory = new Http\RequestFactory;
 $request = $factory->createHttpRequest();
 $response = new Http\Response;
 
-dd($_POST);
-dd($request->getFile('java_class'));
-
 // Get the file uploaded
 $file = $request->getFile('java_class');
 
@@ -32,19 +29,19 @@ $command = 'cd '. __DIR__ . '/../../storage/' . ' && ' .
 $process = new Process($command);
 $process->run();
 
-// Adapter for file system
-$adapter = new Local(__DIR__.'/../../storage/');
-$filesystem = new Filesystem($adapter);
-
-// Delete files
-// $filesystem->delete($class_name . '.java');
-// $filesystem->delete($class_name . '.class');
-
 // Set the response
 $response->setCode(Http\IResponse::S200_OK);
 $response->setContentType('application/json');
 
 echo $process->getOutput();
+
+// Adapter for file system
+$adapter = new Local(__DIR__.'/../../storage/');
+$filesystem = new Filesystem($adapter);
+
+// Delete files
+$filesystem->delete($class_name . '.java');
+$filesystem->delete($class_name . '.class');
 
 
 function dd($var){

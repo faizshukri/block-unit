@@ -14,7 +14,7 @@ gulp.task('build', function(){
     elixir(function(mix) {
 
         //Clean first before build
-        del(['public/css/', 'public/js/', 'public/index.html']);
+        del(['public/css/', 'public/js/', 'public/index.html', 'public/fonts']);
 
         // Cache the template
         gulp.src('src/coffee/**/*.html')
@@ -30,6 +30,13 @@ gulp.task('build', function(){
             .coffee(
                 '**/*.coffee'
             )
+            .scripts(
+                '**/*.js'
+            )
+            .copy(
+                'public/vendor/bootstrap/fonts',
+                'public/fonts/bootstrap'
+            );
     });
 });
 

@@ -13,7 +13,8 @@ var elixir        = require('laravel-elixir'),
     uglify        = require('gulp-uglify'),
     uglifycss     = require('gulp-uglifycss'),
     rename        = require("gulp-rename"),
-    argv          = require('yargs').argv;
+    argv          = require('yargs').argv,
+    livereload    = require('gulp-livereload');
 
 elixir.config.assetsPath = 'src';
 elixir.config.publicPath = 'public';
@@ -85,6 +86,7 @@ gulp.task('inject', ['build'], function(){
 });
 
 gulp.task('watch', ['default'], function(){
+    livereload({ start: true });
     gulp.watch('src/**/*', ['default']);
 });
 

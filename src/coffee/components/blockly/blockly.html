@@ -4,7 +4,7 @@
             <div>
                 <form method="post" enctype="multipart/form-data" id="fileUploadForm">
                     <input type="file" name="java_class" id="java_class" style="display: none;">
-                    <input type="submit" value="Upload Image" name="submit" id="fileUploadBtn" class="btn btn-primary">
+                    <input type="submit" value="Upload Class" name="submit" id="fileUploadBtn" class="btn btn-primary">
                 </form>
             </div>
             <hr />
@@ -81,7 +81,9 @@
                 contentType: false,
                 cache: false
             }).done(function(data){
-                console.log(data);
+                var scope = angular.element($('#blockly')).scope();
+                scope.blockly.populateClass(data);
+                scope.$apply();
             });
         });
     })();

@@ -1,5 +1,5 @@
 angular.module "app"
-  .controller "BlocklyCtrl", [ '$scope', ($scope) ->
+  .controller "BlocklyCtrl", [ '$scope', '$cookieStore', 'localStorageService', ($scope, $cookieStore, localStorageService) ->
 
     this.classes = []
 
@@ -7,8 +7,10 @@ angular.module "app"
     this.selectedMethod = {}
     this.selectedTest = {}
 
-    this.createClass = ->
-      class_name = prompt "Class names: "
+    this.createClass = (class_name = false) ->
+      if(!class_name)
+        class_name = prompt "Class names: "
+
       if _.isEmpty class_name
         return
 
@@ -23,8 +25,10 @@ angular.module "app"
       # Create new class and mark it as selected
       this.classes.push this.selectedClass
 
-    this.createMethod = ->
-      method_name = prompt "Method name: "
+    this.createMethod = (method_name = false) ->
+      if(!method_name)
+        method_name = prompt "Method name: "
+
       if _.isEmpty method_name
         return
 
@@ -33,7 +37,7 @@ angular.module "app"
 
       if class_index > -1
         # Deselect selected method in the selected class
-        this.unselectSelected this.classes, this.classes[class_index].methods, class_index + '.'
+        this.unselectSelected this.classes, this.classes[class_index].methods, class_index + '.' + 'methods'
 
       # Set selected method
       this.selectedMethod = { name: method_name, selected: true }
@@ -45,26 +49,65 @@ angular.module "app"
       if _.isEmpty test_name
         return
 
+      # console.log _.isEmpty(this.selectedTest)
+      if ! _.isEmpty(this.selectedTest)
+        this.saveWorkspace()
+        Blockly.mainWorkspace.clear()
+
       # Get index of selected class
       class_index = _.findIndex this.classes, {selected: true}
 
       if class_index > -1
         # Deselect selected test in the selected class
-        this.unselectSelected this.classes, this.classes[class_index].tests, class_index + '.'
+        this.unselectSelected this.classes, this.classes[class_index].tests, class_index + '.' + 'tests'
 
       # Set selected test
       this.selectedTest = { name: test_name, selected: true }
       # Add test to the class
       this.classes[class_index].tests.push this.selectedTest
 
-    this.unselectSelected = (target, search = [], base = '') ->
+    this.step = 0
+
+    this.unselectSelected = (target, search = [], base = '', callback = null) ->
       current_selected = _.findIndex(search, {selected: true})
-      _.set(target, base + current_selected + '.selected', false)
+      console.log('3 ', 'unselectSelected: ', this.selectedTest, target, base, current_selected)
+      this.step++
+      if current_selected > -1
+        base = base + '.' + current_selected
+        _.set(target, base + '.selected', false)
+        console.log('4 ', 'last ', this.selectedTest)
+
+      if callback
+        callback()
+      this.updatingTest = true
+      return
 
     this.updateClass = (class_name) ->
       this.unselectSelected this.classes, this.classes
       class_index = _.findIndex( this.classes, {name: class_name.name} )
-      this.classes[ class_index ].selected = true
+      _.set(this.classes, class_index + '.selected', true)
+
+
+    this.updateTest = (test_name) ->
+
+      # if this.updatingTest
+      #   console.log('updating test')
+      #   this.updatingTest = false
+      #   return
+
+      console.log('1 ', this.selectedTest)
+      class_index = _.findIndex( this.classes, {selected: true} )
+      test_index = _.findIndex( this.classes[ class_index ].tests, {name: test_name.name})
+      console.log('2 ', 'updateTest: ', this.selectedTest, class_index, test_index)
+      this.step++
+      this.unselectSelected this.classes, this.classes[class_index].tests, class_index + '.' + 'tests'
+      console.log('5 ', this.selectedTest)
+      # _.set(this.classes, class_index+'.tests.'+test_index+'.selected', true)
+      # this.classes[class_index].tests[test_index].selected = true
+      console.log('6 ', this.selectedTest)
+      # this.updatingTest = false
+      return
+      # this.selectedTest.selected = true
 
     this.getClassIndex = ->
       _.findIndex this.classes, this.selectedClass
@@ -72,10 +115,83 @@ angular.module "app"
     this.getMethodIndex = ->
       _.findIndex this.classes[this.getClassIndex()].methods, this.selectedMethod
 
+    this.populateClass = (obj) ->
+      this.createClass obj.class_name
+
+      _.each obj.methods, (method_name) ->
+        this.createMethod method_name
+      , this
+
+      console.log obj
+
+
+    this.saveWorkspace = (name = null) ->
+      if _.isNull name
+        name = this.selectedTest.name
+      # Build cookie name
+      data_item = _.snakeCase(this.selectedClass.name) + '_' + _.snakeCase(name)
+      
+      # Get blockly representative in xml string
+      xml = Blockly.Xml.workspaceToDom Blockly.mainWorkspace
+      xmlString = Blockly.Xml.domToText xml 
+
+      # Store the string into cookie
+      # $cookieStore.put(data_item, xmlString);
+      localStorageService.set(data_item, xmlString)
+
+    this.loadWorkspace = ->
+      # Build cookie name
+      data_item = _.snakeCase(this.selectedClass.name) + '_' + _.snakeCase(this.selectedTest.name)
+
+      # Retrieve the xml string from cookie
+      # xmlString = $cookieStore.get data_item
+      xmlString = localStorageService.get data_item;
+
+      # Restore the block structure to the blockly workspace
+      xml = Blockly.Xml.textToDom xmlString;
+      Blockly.Xml.domToWorkspace( Blockly.mainWorkspace, xml )
+
+    # Watch selectedClass value. If has any changes, reset selectedMethod and selectedTest
     $scope.$watch(angular.bind this, () -> this.selectedClass
     (newVal, oldVal) ->
+      console.log('class change')
       this.selectedMethod = { }
       this.selectedTest = { }
+    )
+
+    this.updatingTest = false
+
+    $scope.$watch(angular.bind this, () -> this.selectedTest
+    angular.bind this, (newVal, oldVal) ->
+
+      if _.isEmpty(newVal) or _.isEqual(newVal, oldVal)
+        return
+      if this.updatingTest
+        this.updatingTest = false
+        console.log('stop here, ', this.updatingTest)
+        return
+
+      console.log('testChanged: ', newVal, oldVal)
+      # console.log('changed')
+      console.log('1 ', this.selectedTest)
+      class_index = _.findIndex( this.classes, {selected: true} )
+      test_index_selected = _.findIndex( this.classes[ class_index ].tests, {selected: true})
+      test_index = _.findIndex( this.classes[ class_index ].tests, newVal)
+      console.log('2 ', 'updateTest: ', this.selectedTest, class_index, test_index, test_index_selected)
+
+      this.saveWorkspace(oldVal.name)
+      Blockly.mainWorkspace.clear()
+
+      this.classes[class_index].tests[test_index_selected].selected = false
+      this.classes[class_index].tests[test_index].selected = true
+      this.selectedTest = this.classes[class_index].tests[test_index]
+
+      Blockly.mainWorkspace.clear()
+      this.loadWorkspace()
+
+      console.log('6 ', this.selectedTest)
+      this.updatingTest = true
+      # return
     )
 
     this.blocks =
@@ -151,4 +267,6 @@ angular.module "app"
         "text_prompt",
         "text_prompt_ext",
       ]
+
+    return
   ]

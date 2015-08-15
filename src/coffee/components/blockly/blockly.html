@@ -18,6 +18,7 @@
 
             <div><h4 class="pull-left">Methods</h4>
                 <button class="btn btn-primary pull-right"
+                        ng-disabled="blockly.classes.length==0"
                         ng-bootbox-title="Add class method"
                         ng-bootbox-custom-dialog
                         ng-bootbox-custom-dialog-template="components/blockly/add_method.html"
@@ -31,7 +32,13 @@
                 </select>
             </div>
             <hr />
-            <div><h4 class="pull-left">Tests</h4><a href="" ng-click="blockly.createTest()" class="btn btn-primary pull-right"><i class="glyphicon glyphicon-plus "></i> New test</a></div>
+            <div><h4 class="pull-left">Tests</h4>
+                <button class="btn btn-primary pull-right"
+                        ng-disabled="blockly.classes.length==0"
+                        ng-click="blockly.createTest()">
+                    <i class="glyphicon glyphicon-plus "></i> New test
+                </button>
+            </div>
             <div>
                 <select class="form-control selectItem" size="4" ng-model="blockly.selectedTest" ng-options="test.name for test in blockly.selectedClass.tests  track by test.selected">
                     <option value="" ng-if="false"></option>

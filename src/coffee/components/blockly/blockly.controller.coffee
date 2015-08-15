@@ -26,9 +26,6 @@ angular.module "app"
       this.classes.push this.selectedClass
 
     this.createMethod = (method_name = false) ->
-      if(!method_name)
-        method_name = prompt "Method name: "
-
       if _.isEmpty method_name
         return
 
@@ -121,9 +118,6 @@ angular.module "app"
       _.each obj.methods, (method_name) ->
         this.createMethod method_name
       , this
-
-      console.log obj
-
 
     this.saveWorkspace = (name = null) ->
       if _.isNull name
@@ -267,6 +261,17 @@ angular.module "app"
         "text_prompt",
         "text_prompt_ext",
       ]
+
+    $scope.customDialogButtons =
+      success:
+        label: 'Add'
+        className: 'btn-success'
+        callback: () ->
+          method_name = $('#method_name').val()
+          method_parameters = $('#method_parameters').val()
+          method_return = $('#method_return').prop('checked')
+
+          Blockly.Blocks.methods.addMethod(method_name, method_parameters, method_return)
 
     return
   ]

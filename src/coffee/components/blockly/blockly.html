@@ -15,7 +15,16 @@
                 </select>
             </div>
             <hr />
-            <div><h4 class="pull-left">Methods</h4><a href="" ng-click="blockly.createMethod()" class="btn btn-primary pull-right"><i class="glyphicon glyphicon-plus "></i> New method</a></div>
+
+            <div><h4 class="pull-left">Methods</h4>
+                <button class="btn btn-primary pull-right"
+                        ng-bootbox-title="Add class method"
+                        ng-bootbox-custom-dialog
+                        ng-bootbox-custom-dialog-template="components/blockly/add_method.html"
+                        ng-bootbox-buttons="customDialogButtons">
+                    <i class="glyphicon glyphicon-plus "></i> New method
+                </button>
+            </div>
             <div>
                 <select class="form-control selectItem" size="4" ng-model="blockly.selectedMethod" ng-options="method.name for method in blockly.selectedClass.methods track by method.selected">
                     <option value="" ng-if="false"></option>
@@ -43,7 +52,7 @@
         </category>
         <sep></sep>
         <category name="Variables" custom="VARIABLE"></category>
-        <category name="Functions" custom="PROCEDURE"></category>
+        <category name="Methods"></category>
     </xml>
 </div>
 
@@ -53,8 +62,9 @@
     (function(){
         // Configure blockly
         setTimeout(function(){
-            var workspace = Blockly.inject('blocklyDiv',
-            {toolbox: document.getElementById('toolbox')});
+            window.toolbox = document.getElementById('toolbox');
+            window.workspace = Blockly.inject('blocklyDiv',
+            {toolbox: toolbox});
         }, 10);
 
         // Trigger file upload

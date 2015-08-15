@@ -1,4 +1,4 @@
-angular.module 'app', ['ngResource', 'ngRoute', 'ngCookies', 'LocalStorageModule', 'ui.bootstrap']
+angular.module 'app', ['ngResource', 'ngRoute', 'ngCookies', 'LocalStorageModule', 'ui.bootstrap', 'ngBootbox']
   .config [ '$routeProvider', ($routeProvider) ->
     $routeProvider
       .when "/",

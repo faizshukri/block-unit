@@ -1,0 +1,43 @@
+<div class="row" id="addMethodWrapper">
+    <div class="col-sm-12">
+        <form class="form-horizontal" id="addMethodForm">
+            <div class="form-group">
+                <label for="method_name" class="col-sm-3 control-label">Method Name</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="method_name" name="method_name" placeholder="Method Name" autofocus="true" tabindex="1">
+                    <span class="help-block">Put method name here.</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="method_parameters" class="col-sm-3 control-label">Method Parameters</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="method_parameters" name="method_parameters" placeholder="Method Parameters">
+                    <span class="help-block">Put method parameters here, separated by comma.</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-9">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="method_return" name="method_return" value="1"> Return value
+                        </label>
+                    </div>
+                    <span class="help-block">Is method return a value?</span>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    (function(){
+        $('#addMethodWrapper #addMethodForm').submit(function(e){
+            e.preventDefault();
+        });
+
+        // Somehow autofocus not working in ngBootBox. Hack to manual focus here.
+        setTimeout(function(){
+            $('#method_name').focus().select();
+        }, 500);
+    })();
+</script>

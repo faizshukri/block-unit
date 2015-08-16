@@ -32,7 +32,7 @@
                 </button>
             </div>
             <div>
-                <select id="selectMethod" class="form-control selectItem" size="4" ng-model="blockly.selectedMethod" ng-options="method.name for method in blockly.selectedClass.methods track by method.selected">
+                <select id="selectMethod" ng-disabled="blockly.classes.length==0" class="form-control selectItem" size="4" ng-model="blockly.selectedMethod" ng-options="method.name for method in blockly.selectedClass.methods track by method.selected">
                     <option value="" ng-if="false"></option>
                 </select>
             </div>
@@ -45,7 +45,7 @@
                 </button>
             </div>
             <div>
-                <select class="form-control selectItem" size="4" ng-model="blockly.selectedTest" ng-options="test.name for test in blockly.selectedClass.tests  track by test.selected">
+                <select ng-disabled="blockly.classes.length==0" class="form-control selectItem" size="4" ng-model="blockly.selectedTest" ng-options="test.name for test in blockly.selectedClass.tests  track by test.selected">
                     <option value="" ng-if="false"></option>
                 </select>
             </div>

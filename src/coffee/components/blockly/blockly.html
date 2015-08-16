@@ -58,6 +58,7 @@
         </div>
         <div class="col-sm-9">
             <div id="blocklyDiv" style="height: 520px; width: 100%;"></div>
+            <div id="blocklyDivHidden" style="display: none;"></div>
             <div class="testCode">
                 <pre><code class="java">// Generated code here</code></pre>
             </div>
@@ -83,7 +84,9 @@
         setTimeout(function(){
             window.toolbox = document.getElementById('toolbox');
             window.workspace = Blockly.inject('blocklyDiv',
-            {toolbox: toolbox});
+                    {toolbox: toolbox});
+            window.workspaceHidden = Blockly.inject('blocklyDivHidden',
+                    {toolbox: toolbox});
         }, 10);
 
         // Trigger file upload

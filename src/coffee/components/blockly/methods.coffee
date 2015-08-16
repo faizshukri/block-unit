@@ -4,7 +4,7 @@ goog.provide('Blockly.Blocks.methods')
 
 goog.require('Blockly.Blocks')
 
-Blockly.Blocks.methods.addMethod = (name, params = "", hasReturn = false) ->
+Blockly.Blocks.methods.addMethod = (name, params = "", hasReturn = false, returnType = "") ->
 
   if(_.isString(params))
     # Remove space, and split text into array by comma
@@ -19,8 +19,6 @@ Blockly.Blocks.methods.addMethod = (name, params = "", hasReturn = false) ->
 
   Blockly.Blocks[block_name] =
     init: () ->
-
-      console.log(block_name, params, hasReturn)
 
       # Add method name to the block
       this.appendDummyInput()
@@ -39,7 +37,10 @@ Blockly.Blocks.methods.addMethod = (name, params = "", hasReturn = false) ->
 
       # Check if method has return
       if hasReturn
-        this.setOutput(true)
+        if _.isEmpty(returnType)
+          this.setOutput(true)
+        else
+          this.setOutput(true, returnType)
       else
         this.setPreviousStatement(true);
         this.setNextStatement(true)

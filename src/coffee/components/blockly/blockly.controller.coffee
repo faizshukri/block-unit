@@ -133,9 +133,16 @@ angular.module "app"
       # $cookieStore.put(data_item, xmlString);
       localStorageService.set(data_item, xmlString)
 
-    this.loadWorkspace = ->
+    ###
+      Load workspace for current selected class and current selected test
+    ###
+    this.loadWorkspace = (workspace = Blockly.mainWorkspace, storage_key = "") ->
+
       # Build cookie name
-      data_item = _.snakeCase(this.selectedClass.name) + '_' + _.snakeCase(this.selectedTest.name)
+      if(_.isEmpty(storage_key))
+        storage_key = this.selectedTest.name
+
+      data_item = _.snakeCase(this.selectedClass.name) + '_' + _.snakeCase(storage_key)
 
       # Retrieve the xml string from cookie
       # xmlString = $cookieStore.get data_item
@@ -143,7 +150,7 @@ angular.module "app"
 
       # Restore the block structure to the blockly workspace
       xml = Blockly.Xml.textToDom xmlString;
-      Blockly.Xml.domToWorkspace( Blockly.mainWorkspace, xml )
+      Blockly.Xml.domToWorkspace( workspace, xml )
 
     # Watch selectedClass value. If has any changes, reset selectedMethod and selectedTest
     $scope.$watch(angular.bind this, () -> this.selectedClass
@@ -158,6 +165,9 @@ angular.module "app"
 
     this.generateCode = (selector) ->
 
+      # First, let's save this workspace first before generating any code
+      this.saveWorkspace()
+
       # Start of jUnit class
       code = "// Code generated at " + Date() + "\n"+
             "import static org.junit.Assert.*;\n\n" +
@@ -166,10 +176,26 @@ angular.module "app"
             "public class test" + this.selectedClass.name + " {\n\n";
 
       # Loop through tests
-      this.selectedClass.tests.forEach( (test) ->
+      this.selectedClass.tests.forEach( ((test) ->
+
+        # Clear the workspace before load anything to it
+        workspaceHidden.clear()
+
+        # Use workspace hidden to generate code
+        this.loadWorkspace(workspaceHidden, test.name)
+
+        # Get the generated code from hidden workspace
+        testCode = Blockly.Java.workspaceToCode(workspaceHidden);
+        testCode = testCode
+                    .replace(/^(.)/gm,"\t\t$1")     # Add tab at every starting text in every line
+                    .replace(/(\r\n|\n|\r)+$/, "")  # Remove end empty line
+
         code += "\t@Test\n" +
-                "\tpublic void " + test.name + "() {\n\n\t}\n\n"
-      )
+                "\tpublic void " + test.name + "() {\n" +
+                testCode +
+                "\n\t}\n\n"
+
+      ).bind(this))
 
       # End of jUnit class
       code += "}\n";

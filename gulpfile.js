@@ -24,11 +24,16 @@ var path = {
     'vendor' : 'public/vendor'
 };
 
-gulp.task('build', ['clean', 'cacheTemplate', 'sass', 'coffee', 'scripts', 'copyAssets']);
+gulp.task('build', ['clean', 'cacheTemplate', 'sass', 'css', 'coffee', 'scripts', 'copyAssets', 'clean:after']);
 
 gulp.task('clean', function(){
     //Clean first before build
     return gulp.src([path.public+'/css/', path.public+'/js/', path.public+'/index.html', path.public+'/fonts/'], {read: false})
+        .pipe(clean({force: true}));
+});
+
+gulp.task('clean:after', ['copyAssets'], function(){
+    return gulp.src(path.public+'/build/')
         .pipe(clean({force: true}));
 });
 
@@ -45,6 +50,12 @@ gulp.task('sass', ['clean'], function () {
     return gulp.src(path.assets + '/sass/**/*.scss')
         .pipe(wiredep())
         .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest(path.public + '/build/css'));
+});
+
+gulp.task('css', ['sass'], function(){
+    return gulp.src([path.public+'/build/css/**/*.css', path.assets+'/css/**/*.css'])
+        .pipe(concat('app.css'))
         .pipe(gulpif(argv.production, uglifycss()))
         .pipe(gulpif(argv.production, rename({suffix: '.min'})))
         .pipe(gulp.dest(path.public + '/css'));
@@ -67,7 +78,7 @@ gulp.task('scripts', ['clean'], function() {
         .pipe(gulp.dest(path.public + '/js'));
 });
 
-gulp.task('copyAssets', ['clean'], function(){
+gulp.task('copyAssets', ['clean', 'css'], function(){
     return gulp.src(path.vendor + '/bootstrap/fonts/**/*')
         .pipe(gulp.dest(path.public + '/fonts/bootstrap'));
 });

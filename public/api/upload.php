@@ -22,7 +22,7 @@ $class_name = str_replace('.java', '', $file->getName());
 
 // Prepare the command
 $command = 'cd '. __DIR__ . '/../../storage/' . ' && ' .
-           'javac '.$file->getName().' && ' .
+           'javac -parameters '.$file->getName().' && ' .
            'java -cp gson-2.3.1.jar:. Reflection ' . $class_name;
 
 // Run the command

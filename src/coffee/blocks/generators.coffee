@@ -4,15 +4,16 @@ goog.provide('Blockly.Blocks.methods')
 
 goog.require('Blockly.Blocks')
 
-Blockly.Blocks.methods.addMethod = (name, params = false, hasReturn = false) ->
+Blockly.Blocks.methods.addMethod = (name, params = "", hasReturn = false) ->
 
-  # Remove space, and split text into array by comma
-  params = params.replace(' ', '').split(',')
+  if(_.isString(params))
+    # Remove space, and split text into array by comma
+    params = params.replace(' ', '').split(',')
 
-  # Remove empty space from array
-  params = $.grep(params,(n) ->
-    return(n)
-  )
+    # Remove empty space from array
+    params = $.grep(params, (n) ->
+      return(n)
+    )
 
   block_name = 'methods_' + name
 

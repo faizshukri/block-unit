@@ -159,7 +159,8 @@ angular.module "app"
     this.generateCode = (selector) ->
 
       # Start of jUnit class
-      code = "import static org.junit.Assert.*;\n\n" +
+      code = "// Code generated at " + Date() + "\n"+
+            "import static org.junit.Assert.*;\n\n" +
             "import org.junit.Test;\n\n" +
 
             "public class test" + this.selectedClass.name + " {\n\n";

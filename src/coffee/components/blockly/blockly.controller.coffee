@@ -208,12 +208,6 @@ angular.module "app"
         "assert_null",
         "assert_notnull"
       ],
-      Colour: [
-        "colour_picker",
-        "colour_random",
-        "colour_rgb",
-        "colour_blend"
-      ],
       Control: [
         "controls_repeat",
         "controls_repeat_ext",

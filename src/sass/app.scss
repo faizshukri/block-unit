@@ -19,5 +19,12 @@ body {
       .selectItem {
         overflow-y: auto;
       }
+
+      .testCode {
+        pre {
+          padding: 0px;
+          margin-top: 20px;
+        }
+      }
     }
 }

@@ -153,7 +153,19 @@ angular.module "app"
       this.selectedTest = { }
     )
 
+    # TODO Comment what is this code doing?
     this.updatingTest = false
+
+    this.generateCode = (selector) ->
+      code = "import static org.junit.Assert.*;\n\n" +
+            "import org.junit.Test;\n\n" +
+
+            "public class " + this.selectedClass.name + " {\n\n" +
+            "}\n";
+
+      $(selector).text(code)
+      hljs.highlightBlock($(selector)[0])
+
 
     $scope.$watch(angular.bind this, () -> this.selectedTest
     angular.bind this, (newVal, oldVal) ->

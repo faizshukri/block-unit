@@ -45,10 +45,17 @@
                 </select>
             </div>
             <hr />
-            <a href="" class="btn btn-success btn-lg btn-block">Generate jUnit</a>
+            <button class="btn btn-success btn-lg btn-block"
+                    ng-disabled="blockly.classes.length==0"
+                    ng-click="blockly.generateCode('.testCode code')">
+                Generate jUnit
+            </button>
         </div>
         <div class="col-sm-9">
             <div id="blocklyDiv" style="height: 520px; width: 100%;"></div>
+            <div class="testCode">
+                <pre><code class="java">// Generated code here</code></pre>
+            </div>
         </div>
     </div>
 
@@ -103,5 +110,8 @@
                 scope.$apply();
             });
         });
+
+        // Initialize code highlighting on load
+        hljs.initHighlightingOnLoad();
     })();
 </script>

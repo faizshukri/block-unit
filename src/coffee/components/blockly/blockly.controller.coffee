@@ -168,7 +168,7 @@ angular.module "app"
       # Loop through tests
       this.selectedClass.tests.forEach( (test) ->
         code += "\t@Test\n" +
-                "\tpublic void " + test.name + " {\n\n\t}\n\n"
+                "\tpublic void " + test.name + "() {\n\n\t}\n\n"
       )
 
       # End of jUnit class

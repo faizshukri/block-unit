@@ -8,9 +8,14 @@
                 </form>
             </div>
             <hr />
-            <div><h4 class="pull-left">Classes</h4><a href="" ng-click="blockly.createClass()" class="btn btn-primary pull-right"><i class="glyphicon glyphicon-plus "></i> New class</a></div>
+            <div><h4 class="pull-left">Classes</h4>
+                <button class="btn btn-primary pull-right"
+                        ng-click="blockly.createClass()">
+                    <i class="glyphicon glyphicon-plus "></i> New class
+                </button>
+            </div>
             <div>
-                <select class="form-control selectItem" size="4" ng-model="blockly.selectedClass" ng-options="class.name for class in blockly.classes" ng-change="blockly.updateClass(blockly.selectedClass)">
+                <select id="selectClass" class="form-control selectItem" size="4" ng-model="blockly.selectedClass" ng-options="class.name for class in blockly.classes" ng-change="blockly.updateClass(blockly.selectedClass)">
                     <option value="" ng-if="false"></option>
                 </select>
             </div>
@@ -103,8 +108,16 @@
                 data: new FormData(this),
                 processData: false,
                 contentType: false,
-                cache: false
+                cache: false,
+                beforeSend: function(xhr){
+                    // Add loading animation on top of the select class
+                    $('#selectClass').addClass('whirl traditional');
+                }
             }).done(function(data){
+                // Remove the loading animation
+                $('#selectClass').removeClass('whirl traditional');
+
+                // Populate class and apply to the DOM
                 var scope = angular.element($('#blockly')).scope();
                 scope.blockly.populateClass(data);
                 scope.$apply();

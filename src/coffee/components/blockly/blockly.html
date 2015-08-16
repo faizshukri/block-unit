@@ -111,6 +111,11 @@
             });
         });
 
+        // Configure some code highlight
+        hljs.configure({
+            tabReplace: '    ' // 4 spaces
+        });
+
         // Initialize code highlighting on load
         hljs.initHighlightingOnLoad();
     })();

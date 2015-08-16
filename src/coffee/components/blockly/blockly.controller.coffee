@@ -157,11 +157,21 @@ angular.module "app"
     this.updatingTest = false
 
     this.generateCode = (selector) ->
+
+      # Start of jUnit class
       code = "import static org.junit.Assert.*;\n\n" +
             "import org.junit.Test;\n\n" +
 
-            "public class " + this.selectedClass.name + " {\n\n" +
-            "}\n";
+            "public class test" + this.selectedClass.name + " {\n\n";
+
+      # Loop through tests
+      this.selectedClass.tests.forEach( (test) ->
+        code += "\t@Test\n" +
+                "\tpublic void " + test.name + " {\n\n\t}\n\n"
+      )
+
+      # End of jUnit class
+      code += "}\n";
 
       $(selector).text(code)
       hljs.highlightBlock($(selector)[0])

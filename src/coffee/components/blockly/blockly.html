@@ -32,7 +32,7 @@
                 </button>
             </div>
             <div>
-                <select class="form-control selectItem" size="4" ng-model="blockly.selectedMethod" ng-options="method.name for method in blockly.selectedClass.methods track by method.selected">
+                <select id="selectMethod" class="form-control selectItem" size="4" ng-model="blockly.selectedMethod" ng-options="method.name for method in blockly.selectedClass.methods track by method.selected">
                     <option value="" ng-if="false"></option>
                 </select>
             </div>
@@ -111,11 +111,11 @@
                 cache: false,
                 beforeSend: function(xhr){
                     // Add loading animation on top of the select class
-                    $('#selectClass').addClass('whirl traditional');
+                    $('#selectClass, #selectMethod').addClass('whirl traditional');
                 }
             }).done(function(data){
                 // Remove the loading animation
-                $('#selectClass').removeClass('whirl traditional');
+                $('#selectClass, #selectMethod').removeClass('whirl traditional');
 
                 // Populate class and apply to the DOM
                 var scope = angular.element($('#blockly')).scope();

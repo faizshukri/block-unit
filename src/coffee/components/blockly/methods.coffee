@@ -49,8 +49,8 @@ Blockly.Blocks.methods.addMethod = (name, params = "", hasReturn = false, return
       this.setHelpUrl('http://www.example.com/')
       this.setColour(290)
 
-  $(toolbox).find("category[name='Methods']").append('<block type="' + block_name + '"></block>')
-  workspace.updateToolbox toolbox;
+  $('#toolbox').find("category[name='Methods']").append('<block type="' + block_name + '"></block>')
+  workspace.updateToolbox(document.getElementById('toolbox'));
   scope = angular.element($('#blockly')).scope()
   scope.blockly.createMethod(name)
   scope.$apply()

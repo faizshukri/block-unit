@@ -71,8 +71,7 @@
         </div>
     </div>
 
-
-    <xml id="toolbox" style="display: none">
+    <xml id="{{ xmlid }}" style="display: none" ng-repeat="xmlid in ['toolbox', 'toolboxOriginal']">
         <category ng-repeat="(key, val) in blockly.blocks" name="{{key}}">
             <block ng-repeat="type in val" type="{{ type }}"></block>
         </category>

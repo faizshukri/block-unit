@@ -159,6 +159,32 @@ angular.module "app"
       data_item = _.snakeCase(class_prefix) + '_' + _.snakeCase(storage_key)
       localStorageService.remove data_item
 
+    ###
+    #  Save the toolbox for class
+    ###
+    this.saveToolbox = (class_name) ->
+      data_item = 'toolbox_' + _.snakeCase(class_name)
+      xmlString = Blockly.Xml.domToText(document.getElementById('toolbox'))
+      localStorageService.set(data_item, xmlString)
+
+    ###
+    #  Load the toolbox for class
+    ###
+    this.loadToolbox = (class_name) ->
+      data_item = 'toolbox_' + _.snakeCase(class_name)
+      xmlString = localStorageService.get(data_item)
+      if !_.isEmpty(xmlString)
+        $('#toolbox').replaceWith(Blockly.Xml.textToDom(xmlString))
+        workspace.updateToolbox document.getElementById("toolbox")
+
+    ###
+    #  Reset the toolbox
+    ###
+    this.resetToolbox = () ->
+      $('#toolbox').find("category[name='Methods']").html("")
+      workspace.updateToolbox document.getElementById('toolboxOriginal')
+
+
     this.generateCode = (selector) ->
 
       # First, let's save this workspace first before generating any code
@@ -204,6 +230,15 @@ angular.module "app"
     angular.bind this, (newVal, oldVal) ->
       this.selectedMethod = { }
       this.selectedTest = { }
+      # Update workspace toolbox
+      if Blockly.mainWorkspace and !_.isEmpty(oldVal.name)
+
+        # Save toolbox
+        this.saveToolbox(oldVal.name)
+        this.resetToolbox()
+
+        # Load new toolbox
+        this.loadToolbox(newVal.name)
     )
 
     ###

@@ -46,11 +46,6 @@ angular.module "app"
       if _.isEmpty test_name
         return
 
-      # console.log _.isEmpty(this.selectedTest)
-      if ! _.isEmpty(this.selectedTest)
-        this.saveWorkspace()
-        Blockly.mainWorkspace.clear()
-
       # Get index of selected class
       class_index = _.findIndex this.classes, {selected: true}
 
@@ -67,12 +62,10 @@ angular.module "app"
 
     this.unselectSelected = (target, search = [], base = '', callback = null) ->
       current_selected = _.findIndex(search, {selected: true})
-      console.log('3 ', 'unselectSelected: ', this.selectedTest, target, base, current_selected)
       this.step++
       if current_selected > -1
         base = base + '.' + current_selected
         _.set(target, base + '.selected', false)
-        console.log('4 ', 'last ', this.selectedTest)
 
       if callback
         callback()
@@ -86,11 +79,6 @@ angular.module "app"
 
 
     this.updateTest = (test_name) ->
-
-      # if this.updatingTest
-      #   console.log('updating test')
-      #   this.updatingTest = false
-      #   return
 
       console.log('1 ', this.selectedTest)
       class_index = _.findIndex( this.classes, {selected: true} )
@@ -119,28 +107,35 @@ angular.module "app"
         Blockly.Blocks.methods.addMethod(method.name, method.parameters, method.return)
       , this
 
-    this.saveWorkspace = (name = null) ->
-      if _.isNull name
-        name = this.selectedTest.name
+    ###
+    #  Save workspace for current test name
+    ###
+    this.saveWorkspace = (storage_key = this.selectedTest.name) ->
+
+      if this.selectedClass.tests.length <= 0
+        return
+
       # Build cookie name
-      data_item = _.snakeCase(this.selectedClass.name) + '_' + _.snakeCase(name)
-      
-      # Get blockly representative in xml string
+      data_item = _.snakeCase(this.selectedClass.name) + '_' + _.snakeCase(storage_key)
+
+      console.log("saveWorkspace: ", data_item)
+
+    # Get blockly representative in xml string
       xml = Blockly.Xml.workspaceToDom Blockly.mainWorkspace
-      xmlString = Blockly.Xml.domToText xml 
+      xmlString = Blockly.Xml.domToText xml
 
       # Store the string into cookie
       # $cookieStore.put(data_item, xmlString);
       localStorageService.set(data_item, xmlString)
 
     ###
-      Load workspace for current selected class and current selected test
+    #  Load workspace for current selected class and current selected test
     ###
-    this.loadWorkspace = (workspace = Blockly.mainWorkspace, storage_key = "") ->
+    this.loadWorkspace = (workspace = Blockly.mainWorkspace, storage_key = this.selectedTest.name) ->
 
       # Build cookie name
-      if(_.isEmpty(storage_key))
-        storage_key = this.selectedTest.name
+      if _.isEmpty(storage_key)
+        return
 
       data_item = _.snakeCase(this.selectedClass.name) + '_' + _.snakeCase(storage_key)
 
@@ -148,20 +143,12 @@ angular.module "app"
       # xmlString = $cookieStore.get data_item
       xmlString = localStorageService.get data_item;
 
-      # Restore the block structure to the blockly workspace
-      xml = Blockly.Xml.textToDom xmlString;
-      Blockly.Xml.domToWorkspace( workspace, xml )
+      if !_.isEmpty xmlString
+        console.log("loadWorkspace: ", data_item)
+        # Restore the block structure to the blockly workspace
+        xml = Blockly.Xml.textToDom xmlString;
+        Blockly.Xml.domToWorkspace( workspace, xml )
 
-    # Watch selectedClass value. If has any changes, reset selectedMethod and selectedTest
-    $scope.$watch(angular.bind this, () -> this.selectedClass
-    (newVal, oldVal) ->
-      console.log('class change')
-      this.selectedMethod = { }
-      this.selectedTest = { }
-    )
-
-    # TODO Comment what is this code doing?
-    this.updatingTest = false
 
     this.generateCode = (selector) ->
 
@@ -203,38 +190,40 @@ angular.module "app"
       $(selector).text(code)
       hljs.highlightBlock($(selector)[0])
 
+    # Watch selectedClass value. If has any changes, reset selectedMethod and selectedTest
+    $scope.$watch(angular.bind this, () -> this.selectedClass
+    angular.bind this, (newVal, oldVal) ->
+      this.selectedMethod = { }
+      this.selectedTest = { }
+    )
+
+    ###
+    #  This variable is to prevent test being call in infinite loops
+    ###
+#    this.updatingTest = false
 
     $scope.$watch(angular.bind this, () -> this.selectedTest
     angular.bind this, (newVal, oldVal) ->
 
-      if _.isEmpty(newVal) or _.isEqual(newVal, oldVal)
-        return
-      if this.updatingTest
-        this.updatingTest = false
-        console.log('stop here, ', this.updatingTest)
+      if _.isEqual(newVal, oldVal)
         return
 
       console.log('testChanged: ', newVal, oldVal)
-      # console.log('changed')
-      console.log('1 ', this.selectedTest)
       class_index = _.findIndex( this.classes, {selected: true} )
       test_index_selected = _.findIndex( this.classes[ class_index ].tests, {selected: true})
       test_index = _.findIndex( this.classes[ class_index ].tests, newVal)
-      console.log('2 ', 'updateTest: ', this.selectedTest, class_index, test_index, test_index_selected)
 
+      # Save workspace and clear it
       this.saveWorkspace(oldVal.name)
       Blockly.mainWorkspace.clear()
 
-      this.classes[class_index].tests[test_index_selected].selected = false
-      this.classes[class_index].tests[test_index].selected = true
-      this.selectedTest = this.classes[class_index].tests[test_index]
+      if this.classes[class_index].tests.length > 0
+        this.classes[class_index].tests[test_index_selected].selected = false
+        this.classes[class_index].tests[test_index].selected = true
+        this.selectedTest = this.classes[class_index].tests[test_index]
 
-      Blockly.mainWorkspace.clear()
       this.loadWorkspace()
 
-      console.log('6 ', this.selectedTest)
-      this.updatingTest = true
-      # return
     )
 
     this.blocks =

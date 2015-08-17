@@ -169,11 +169,11 @@ angular.module "app"
       this.saveWorkspace()
 
       # Start of jUnit class
-      code = "// Code generated at " + Date() + "\n"+
-            "import static org.junit.Assert.*;\n\n" +
-            "import org.junit.Test;\n\n" +
+      code = "// Code generated at " + Date() + " using Blockly\n"+
+             "import static org.junit.Assert.*;\n\n" +
+             "import org.junit.Test;\n\n" +
 
-            "public class test" + this.selectedClass.name + " {\n\n";
+             "public class test" + this.selectedClass.name + " {\n\n";
 
       # Loop through tests
       this.selectedClass.tests.forEach( ((test) ->

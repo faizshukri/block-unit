@@ -46,6 +46,9 @@ angular.module "app"
       if _.isEmpty test_name
         return
 
+      # Remove existing data in local storage for this test name
+      this.removeFromStorage test_name
+
       # Get index of selected class
       class_index = _.findIndex this.classes, {selected: true}
 
@@ -141,7 +144,7 @@ angular.module "app"
 
       # Retrieve the xml string from cookie
       # xmlString = $cookieStore.get data_item
-      xmlString = localStorageService.get data_item;
+      xmlString = localStorageService.get data_item
 
       if !_.isEmpty xmlString
         console.log("loadWorkspace: ", data_item)
@@ -149,6 +152,12 @@ angular.module "app"
         xml = Blockly.Xml.textToDom xmlString;
         Blockly.Xml.domToWorkspace( workspace, xml )
 
+    ###
+    #  Remove item from local storage
+    ###
+    this.removeFromStorage = (storage_key, class_prefix = this.selectedClass.name) ->
+      data_item = _.snakeCase(class_prefix) + '_' + _.snakeCase(storage_key)
+      localStorageService.remove data_item
 
     this.generateCode = (selector) ->
 

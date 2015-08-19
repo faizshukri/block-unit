@@ -24,16 +24,23 @@ Blockly.Blocks.methods.addMethod = (name, params = "", hasReturn = false, return
       # Hold color for this blocks
       Blockly.Blocks.methods.HUE = 290
 
-      # Add method name to the block
-      this.appendDummyInput()
-      .appendField(name)
+      # If method not constructor, we need to make sure user put object first
+      if name != returnType
+        this.appendValueInput("OBJ_VAR")
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("Using obj");
+
+        this.appendDummyInput().appendField(", " + name)
+
+      else
+        this.appendDummyInput().appendField(name)
 
       # For each params, add to the blockly
       params.forEach(((param) ->
         this.appendValueInput(param)
-        .setCheck(null)
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField(param)
+            .setCheck(null)
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField(param)
       ).bind(this))
 
       # Set input params as inline

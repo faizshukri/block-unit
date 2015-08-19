@@ -40,8 +40,10 @@ Blockly.Java.addGenerator = ( name, params = [], hasReturn = false, returnType =
       code = "new "
 
     if obj_var
-      name = obj_var + "." + name
+      full_name = obj_var + "." + name
+    else
+      full_name = name
 
-    code += name + "(" + variables + ")"
+    code += full_name + "(" + variables + ")"
 
     return [code, Blockly.Java.ORDER_ATOMIC]

@@ -27,6 +27,7 @@ Blockly.Blocks.methods.addMethod = (name, params = "", hasReturn = false, return
       # If method not constructor, we need to make sure user put object first
       if name != returnType
         this.appendValueInput("OBJ_VAR")
+            .setCheck(null)
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("Using obj");
 
@@ -60,6 +61,15 @@ Blockly.Blocks.methods.addMethod = (name, params = "", hasReturn = false, return
       this.setHelpUrl('http://www.example.com/')
       this.setColour(Blockly.Blocks.methods.HUE)
 
+    onchange: () ->
+
+      if name != returnType
+        obj_var = this.getInputTargetBlock('OBJ_VAR')
+
+        if _.isEmpty(obj_var)
+          this.setWarningText("Error: You need to create object and put its instance here.")
+        else
+          this.setWarningText(null)
 
   # Add generator implementation
   Blockly.Java.addGenerator(name, params, hasReturn, returnType)

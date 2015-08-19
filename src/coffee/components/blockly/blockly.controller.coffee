@@ -1,6 +1,9 @@
 angular.module "app"
   .controller "BlocklyCtrl", [ '$scope', '$cookieStore', 'localStorageService', ($scope, $cookieStore, localStorageService) ->
 
+    # Remove all local storage
+    localStorageService.clearAll()
+
     this.classes = []
 
     this.selectedClass = {}
@@ -8,9 +11,6 @@ angular.module "app"
     this.selectedTest = {}
 
     this.createClass = (class_name = false) ->
-      if(!class_name)
-        class_name = prompt "Class names: "
-
       if _.isEmpty class_name
         return
 
@@ -270,6 +270,28 @@ angular.module "app"
 
     )
 
+    this.customDialogButtons =
+      createClass:
+        success:
+          label: 'Add'
+          className: 'btn-success'
+          callback: () ->
+            class_name = $('#class_name').val()
+            class_parameters = $('#class_parameters').val()
+
+            Blockly.Blocks.methods.addClass(class_name, class_parameters)
+
+      createMethod:
+        success:
+          label: 'Add'
+          className: 'btn-success'
+          callback: () ->
+            method_name = $('#method_name').val()
+            method_parameters = $('#method_parameters').val()
+            method_return = $('#method_return').prop('checked')
+
+            Blockly.Blocks.methods.addMethod(method_name, method_parameters, method_return)
+
     this.blocks =
       Assert: [
         "assert_true",
@@ -337,17 +359,6 @@ angular.module "app"
         "text_prompt",
         "text_prompt_ext",
       ]
-
-    $scope.customDialogButtons =
-      success:
-        label: 'Add'
-        className: 'btn-success'
-        callback: () ->
-          method_name = $('#method_name').val()
-          method_parameters = $('#method_parameters').val()
-          method_return = $('#method_return').prop('checked')
-
-          Blockly.Blocks.methods.addMethod(method_name, method_parameters, method_return)
 
     return
   ]

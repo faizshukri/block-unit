@@ -1,0 +1,33 @@
+<div class="row" id="addClassWrapper">
+    <div class="col-sm-12">
+        <form class="form-horizontal" id="addClassForm">
+            <div class="form-group">
+                <label for="class_name" class="col-sm-3 control-label">Class Name</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="class_name" name="class_name" placeholder="Class Name" autofocus="true" tabindex="1">
+                    <span class="help-block">Put class name here.</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="class_parameters" class="col-sm-3 control-label">Constructor Parameters</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="class_parameters" name="class_parameters" placeholder="Class Parameters" tabindex="2">
+                    <span class="help-block">Put constructor parameters here, separated by comma.</span>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    (function(){
+        $('#addClassWrapper #addClassForm').submit(function(e){
+            e.preventDefault();
+        });
+
+        // Somehow autofocus not working in ngBootBox. Hack to manual focus here.
+        setTimeout(function(){
+            $('#class_name').focus().select();
+        }, 500);
+    })();
+</script>

@@ -10,7 +10,10 @@
             <hr />
             <div><h4 class="pull-left">Classes</h4>
                 <button class="btn btn-primary pull-right"
-                        ng-click="blockly.createClass()">
+                        ng-bootbox-title="Add class method"
+                        ng-bootbox-custom-dialog
+                        ng-bootbox-custom-dialog-template="components/blockly/add_class.html"
+                        ng-bootbox-buttons="blockly.customDialogButtons.createClass">
                     <i class="glyphicon glyphicon-plus "></i> New class
                 </button>
             </div>
@@ -27,7 +30,7 @@
                         ng-bootbox-title="Add class method"
                         ng-bootbox-custom-dialog
                         ng-bootbox-custom-dialog-template="components/blockly/add_method.html"
-                        ng-bootbox-buttons="customDialogButtons">
+                        ng-bootbox-buttons="blockly.customDialogButtons.createMethod">
                     <i class="glyphicon glyphicon-plus "></i> New method
                 </button>
             </div>

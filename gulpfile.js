@@ -1,9 +1,6 @@
-var elixir        = require('laravel-elixir'),
-    gulp          = require('gulp'),
+var gulp          = require('gulp'),
     templateCache = require('gulp-angular-templatecache'),
     inject        = require('gulp-inject'),
-    del           = require('del'),
-    bowerFiles    = require('main-bower-files'),
     wiredep       = require('wiredep').stream,
     sass          = require('gulp-sass'),
     coffee        = require('gulp-coffee'),
@@ -16,8 +13,6 @@ var elixir        = require('laravel-elixir'),
     argv          = require('yargs').argv,
     livereload    = require('gulp-livereload');
 
-elixir.config.assetsPath = 'src';
-elixir.config.publicPath = 'public';
 var path = {
     'assets' : 'src',
     'public' : 'public',

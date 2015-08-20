@@ -89,9 +89,9 @@ Blockly.Blocks.methods.addClass = (name, params = "") ->
   scope = angular.element($('#blockly')).scope()
   scope.blockly.createClass(name)
 
-  # Create constructor block
-  Blockly.Blocks.methods.addMethod(name, params, true, name)
-
   # Apply only if not in progress
   if(!scope.$$phase)
     scope.$apply()
+
+  # Create constructor block
+  Blockly.Blocks.methods.addMethod(name, params, true, name)

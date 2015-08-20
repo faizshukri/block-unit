@@ -107,7 +107,7 @@ angular.module "app"
       this.createClass obj.class_name
 
       _.each obj.methods, (method) ->
-        Blockly.Blocks.methods.addMethod(method.name, method.parameters, method.return)
+        Blockly.Blocks.methods.addMethod(method.name, method.parameters, method.return, method.returnType)
       , this
 
     ###

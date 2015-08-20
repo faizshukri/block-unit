@@ -1,5 +1,6 @@
 // bower:scss
 // endbower
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,700,700italic);
 
 html,body {
     background: white;
@@ -8,6 +9,7 @@ html,body {
 body {
   background-image: url(../images/gplaypattern.png);
   background-attachment:fixed;
+  font-family: 'Open Sans', sans-serif;
 }
 
 #web-blockly {

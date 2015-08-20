@@ -106,6 +106,9 @@ angular.module "app"
     this.populateClass = (obj) ->
       this.createClass obj.class_name
 
+      if(!$scope.$$phase)
+        $scope.$apply()
+
       _.each obj.methods, (method) ->
         Blockly.Blocks.methods.addMethod(method.name, method.parameters, method.return, method.returnType)
       , this

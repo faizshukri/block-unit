@@ -29,20 +29,22 @@ $command = 'cd '. __DIR__ . '/../../storage/' . ' && ' .
 $process = new Process($command);
 $process->run();
 
+$content = $process->getOutput() ?: json_encode(['error' => 'Your class in not a valid Java Class. Please try another file']);
+
 // Set the response
 $response->setCode(Http\IResponse::S200_OK);
 $response->setContentType('application/json');
 
-echo $process->getOutput();
+echo $content;
 
 // Adapter for file system
 $adapter = new Local(__DIR__.'/../../storage/');
 $filesystem = new Filesystem($adapter);
 
 // Delete files
-$filesystem->delete($class_name . '.java');
-$filesystem->delete($class_name . '.class');
-
+$filesystem->delete($file->getName());
+if($filesystem->has($class_name . '.class'))
+    $filesystem->delete($class_name . '.class');
 
 function dd($var){
     echo '<pre>';

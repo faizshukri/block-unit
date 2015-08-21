@@ -141,10 +141,14 @@
                 // Remove the loading animation
                 $('.whirlSpinner').hide();
 
-                // Populate class and apply to the DOM
-                var scope = angular.element($('#blockly')).scope();
-                scope.blockly.populateClass(data);
-                scope.$apply();
+                if(!_.isEmpty(data.error)){
+                    alert(data.error);
+                } else {
+                    // Populate class and apply to the DOM
+                    var scope = angular.element($('#blockly')).scope();
+                    scope.blockly.populateClass(data);
+                    scope.$apply();
+                }
             });
         });
 

@@ -17,10 +17,14 @@
                     <i class="glyphicon glyphicon-plus "></i> New class
                 </button>
             </div>
+            <div class="clearfix"></div>
             <div>
-                <select id="selectClass" class="form-control selectItem" size="4" ng-model="blockly.selectedClass" ng-options="class.name for class in blockly.classes" ng-change="blockly.updateClass(blockly.selectedClass)">
-                    <option value="" ng-if="false"></option>
-                </select>
+                <div style="position:relative;">
+                    <div class="whirlSpinner whirl traditional" style="position: absolute; height: 100%; width: 100%; display: none;"></div>
+                    <select id="selectClass" class="form-control selectItem" size="4" ng-model="blockly.selectedClass" ng-options="class.name for class in blockly.classes" ng-change="blockly.updateClass(blockly.selectedClass)">
+                        <option value="" ng-if="false"></option>
+                    </select>
+                </div>
             </div>
             <hr />
 
@@ -34,10 +38,14 @@
                     <i class="glyphicon glyphicon-plus "></i> New method
                 </button>
             </div>
+            <div class="clearfix"></div>
             <div>
-                <select id="selectMethod" ng-disabled="blockly.classes.length==0" class="form-control selectItem" size="4" ng-model="blockly.selectedMethod" ng-options="method.name for method in blockly.selectedClass.methods track by method.selected">
-                    <option value="" ng-if="false"></option>
-                </select>
+                <div style="position:relative;">
+                    <div class="whirlSpinner whirl traditional" style="position: absolute; height: 100%; width: 100%; display: none;"></div>
+                    <select id="selectMethod" ng-disabled="blockly.classes.length==0" class="form-control selectItem" size="4" ng-model="blockly.selectedMethod" ng-options="method.name for method in blockly.selectedClass.methods track by method.selected">
+                        <option value="" ng-if="false"></option>
+                    </select>
+                </div>
             </div>
             <hr />
             <div><h4 class="pull-left">Tests</h4>
@@ -47,7 +55,7 @@
                     <i class="glyphicon glyphicon-plus "></i> New test
                 </button>
             </div>
-            <div>
+            <div class="clearfix">
                 <select ng-disabled="blockly.classes.length==0" class="form-control selectItem" size="4" ng-model="blockly.selectedTest" ng-options="test.name for test in blockly.selectedClass.tests  track by test.selected">
                     <option value="" ng-if="false"></option>
                 </select>
@@ -62,7 +70,7 @@
         <div class="col-sm-9">
             <div style="height: 520px; width: 100%; position: relative;">
                 <div id="blocklyDiv" style="position: absolute; width: 100%; height: 100%; top: 0px; left: 0px;"></div>
-                <div ng-hide="blockly.selectedClass.tests.length>0">
+                <div ng-hide="blockly.selectedClass.tests.length>0 || true">
                     <div style="position: absolute; height: 100%; width: 100%; z-index: 2; background-color: rgba(255,255,255,0.6); top: 0px; left: 0px;"></div>
                     <h2 style="position: absolute; width: 100%; z-index: 1; top: 40%; text-align: center;">Please create at least one test.</h2>
                 </div>
@@ -122,11 +130,11 @@
                 cache: false,
                 beforeSend: function(xhr){
                     // Add loading animation on top of the select class
-                    $('#selectClass, #selectMethod').addClass('whirl traditional');
+                    $('.whirlSpinner').show();
                 }
             }).done(function(data){
                 // Remove the loading animation
-                $('#selectClass, #selectMethod').removeClass('whirl traditional');
+                $('.whirlSpinner').hide();
 
                 // Populate class and apply to the DOM
                 var scope = angular.element($('#blockly')).scope();

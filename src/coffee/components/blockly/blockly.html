@@ -1,20 +1,19 @@
 <div id="blockly" ng-controller="BlocklyCtrl as blockly">
     <div class="row">
         <div class="col-sm-3">
-            <div>
-                <form method="post" enctype="multipart/form-data" id="fileUploadForm">
-                    <input type="file" name="java_class" id="java_class" style="display: none;">
-                    <input type="submit" value="Upload Class" name="submit" id="fileUploadBtn" class="btn btn-primary">
-                </form>
-            </div>
             <hr />
             <div><h4 class="pull-left">Classes</h4>
-                <button class="btn btn-primary pull-right"
+
+                <form method="post" enctype="multipart/form-data" id="fileUploadForm">
+                    <input type="file" name="java_class" id="java_class" style="display: none;">
+                    <button id="fileUploadBtn" class="btn btn-primary pull-right"><i class="fa fa-upload"></i> Upload</button>
+                </form>
+                <button style="margin-right: 5px;" class="btn btn-primary pull-right"
                         ng-bootbox-title="Add class method"
                         ng-bootbox-custom-dialog
                         ng-bootbox-custom-dialog-template="components/blockly/add_class.html"
                         ng-bootbox-buttons="blockly.customDialogButtons.createClass">
-                    <i class="glyphicon glyphicon-plus "></i> New class
+                    <i class="glyphicon glyphicon-plus"></i> New
                 </button>
             </div>
             <div class="clearfix"></div>
@@ -61,6 +60,19 @@
                 </select>
             </div>
             <hr />
+        </div>
+        <div class="col-sm-9">
+            <div style="height: 550px; width: 100%; position: relative;">
+                <div id="blocklyDiv" style="position: absolute; width: 100%; height: 100%; top: 0px; left: 0px;"></div>
+                <div ng-hide="blockly.selectedClass.tests.length>0 || true">
+                    <div style="position: absolute; height: 100%; width: 100%; z-index: 2; background-color: rgba(255,255,255,0.6); top: 0px; left: 0px;"></div>
+                    <h2 style="position: absolute; width: 100%; z-index: 1; top: 40%; text-align: center;">Please create at least one test.</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3" style="margin-top: 20px;">
             <button class="btn btn-success btn-lg btn-block"
                     ng-disabled="blockly.classes.length==0"
                     ng-click="blockly.generateCode('.testCode code')">
@@ -68,13 +80,6 @@
             </button>
         </div>
         <div class="col-sm-9">
-            <div style="height: 520px; width: 100%; position: relative;">
-                <div id="blocklyDiv" style="position: absolute; width: 100%; height: 100%; top: 0px; left: 0px;"></div>
-                <div ng-hide="blockly.selectedClass.tests.length>0 || true">
-                    <div style="position: absolute; height: 100%; width: 100%; z-index: 2; background-color: rgba(255,255,255,0.6); top: 0px; left: 0px;"></div>
-                    <h2 style="position: absolute; width: 100%; z-index: 1; top: 40%; text-align: center;">Please create at least one test.</h2>
-                </div>
-            </div>
             <div id="blocklyDivHidden" style="display: none;"></div>
             <div class="testCode">
                 <pre><code class="java">// Generated code here</code></pre>

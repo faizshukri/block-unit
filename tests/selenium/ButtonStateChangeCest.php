@@ -1,5 +1,7 @@
 <?php
 
+use Step\Selenium\SeleniumTester;
+
 class ButtonStateChangeCest
 {
     public function _before(SeleniumGuyTester $I)
@@ -12,28 +14,12 @@ class ButtonStateChangeCest
     {
     }
 
-    private function createClass(SeleniumGuyTester $I)
-    {
-        $I->click('button.button-new-class');
-        $I->waitForElementVisible('input[name="class_name"]', 3);
-        $I->fillField(['name' => 'class_name'], 'Person');
-        $I->click('Add', '.modal-footer');
-        $I->waitForElementNotVisible('.bootbox .modal-body');
-    }
-
-    private function createTest(SeleniumGuyTester $I)
-    {
-        $I->click('button.button-new-test');
-        $I->typeInPopup('test1');
-        $I->acceptPopup();
-    }
-
     // tests
-    public function tryEnableNewMethodButton(SeleniumGuyTester $I)
+    public function tryEnableNewMethodButton(SeleniumTester $I)
     {
         $I->wantTo("Enable new method button after creating class.");
 
-        $this->createClass($I);
+        $I->createClass($I);
 
         $I->dontSeeElement('button.button-new-method:disabled'); // New method button
         $I->dontseeElement('button.button-new-test:disabled'); // New test button
@@ -44,12 +30,12 @@ class ButtonStateChangeCest
     }
 
     // tests
-    public function tryEnableWorkspaceOverlay(SeleniumGuyTester $I)
+    public function tryEnableWorkspaceOverlay(SeleniumTester $I)
     {
         $I->wantTo("Enable workspace overlay after creating test.");
 
-        $this->createClass($I);
-        $this->createTest($I);
+        $I->createClass($I);
+        $I->createTest($I);
 
         // Dont see workspace anymore
         $I->dontSeeElement('.workspace-overlay'); // Workspace overlay

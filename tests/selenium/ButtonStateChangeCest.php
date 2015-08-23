@@ -19,7 +19,7 @@ class ButtonStateChangeCest
     {
         $I->wantTo("Enable new method button after creating class.");
 
-        $I->createClass($I);
+        $I->createClass();
 
         $I->dontSeeElement('button.button-new-method:disabled'); // New method button
         $I->dontseeElement('button.button-new-test:disabled'); // New test button
@@ -34,8 +34,8 @@ class ButtonStateChangeCest
     {
         $I->wantTo("Enable workspace overlay after creating test.");
 
-        $I->createClass($I);
-        $I->createTest($I);
+        $I->createClass();
+        $I->createTest();
 
         // Dont see workspace anymore
         $I->dontSeeElement('.workspace-overlay'); // Workspace overlay

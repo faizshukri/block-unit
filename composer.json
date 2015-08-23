@@ -11,5 +11,8 @@
         "symfony/process": "^3.0@dev",
         "league/flysystem": "^1.1@dev",
         "nette/http": "^2.4@dev"
+    },
+    "require-dev": {
+        "codeception/codeception": "*"
     }
 }

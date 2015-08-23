@@ -1,0 +1,7 @@
+class_name: SeleniumGuyTester
+modules:
+    enabled:
+        - \Helper\SeleniumGuy
+        - WebDriver:
+             url: 'http://localhost:8080/'
+             browser: firefox

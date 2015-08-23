@@ -6,3 +6,6 @@ public/js/
 node_modules/
 public/index.html
 .idea/
+
+tests/_output/*
+tests/selenium-server*.jar

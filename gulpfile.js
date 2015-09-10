@@ -29,7 +29,7 @@ gulp.task('clean', function(){
 
 gulp.task('clean:after', ['copyAssets'], function(){
     return gulp.src(path.public+'/build/')
-        .pipe(clean({force: true}));
+        .pipe(clean({force: true}))
 });
 
 gulp.task('cacheTemplate', ['clean'], function(){
@@ -38,7 +38,7 @@ gulp.task('cacheTemplate', ['clean'], function(){
         .pipe(templateCache({module: 'app'}))
         .pipe(gulpif(argv.production, uglify()))
         .pipe(gulpif(argv.production, rename({suffix: '.min'})))
-        .pipe(gulp.dest(path.public+'/js'));
+        .pipe(gulp.dest(path.public+'/js'))
 });
 
 gulp.task('sass', ['clean'], function () {
@@ -53,29 +53,26 @@ gulp.task('css', ['sass'], function(){
         .pipe(concat('app.css'))
         .pipe(gulpif(argv.production, uglifycss()))
         .pipe(gulpif(argv.production, rename({suffix: '.min'})))
-        .pipe(gulp.dest(path.public + '/css'));
+        .pipe(gulp.dest(path.public + '/css'))
 });
 
 gulp.task('coffee', ['clean'], function() {
     return gulp.src(path.assets + '/coffee/**/*.coffee')
         .pipe(coffee())
+        .pipe(gulp.dest(path.public + '/build/js'))
+});
+
+gulp.task('scripts', ['coffee'], function() {
+    return gulp.src([path.public+'/build/js/**/*.js', path.assets + '/js/**/*.js'])
         .pipe(concat('app.js'))
         .pipe(gulpif(argv.production, uglify()))
         .pipe(gulpif(argv.production, rename({suffix: '.min'})))
-        .pipe(gulp.dest(path.public + '/js'));
-});
-
-gulp.task('scripts', ['clean'], function() {
-    return gulp.src(path.assets + '/js/**/*.js')
-        .pipe(concat('all.js'))
-        .pipe(gulpif(argv.production, uglify()))
-        .pipe(gulpif(argv.production, rename({suffix: '.min'})))
-        .pipe(gulp.dest(path.public + '/js'));
+        .pipe(gulp.dest(path.public + '/js'))
 });
 
 gulp.task('copyAssets', ['clean', 'css'], function(){
     return gulp.src(path.vendor + '/bootstrap/fonts/**/*')
-        .pipe(gulp.dest(path.public + '/fonts/bootstrap'));
+        .pipe(gulp.dest(path.public + '/fonts/bootstrap'))
 });
 
 gulp.task('inject', ['build'], function(){
@@ -88,12 +85,12 @@ gulp.task('inject', ['build'], function(){
     target
         .pipe(wiredep({ignorePath: '../public'}))
         .pipe(inject(sources, {ignorePath: '/public'}))
-        .pipe(gulp.dest('public'));
+        .pipe(gulp.dest('public'))
 });
 
 gulp.task('watch', ['default'], function(){
-    livereload({ start: true });
-    gulp.watch('src/**/*', ['default']);
+    livereload({ start: true })
+    gulp.watch('src/**/*', ['default'])
 });
 
-gulp.task('default', ['build', 'inject']);
+gulp.task('default', ['build', 'inject'])
